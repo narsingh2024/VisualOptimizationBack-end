@@ -1,0 +1,6 @@
+userName: digitalMozart
+Password: XJVTiC5Oi2FOVO6q
+
+database: digitalMozartDB 
+
+connectionString: mongodb+srv://digitalMozart:XJVTiC5Oi2FOVO6q@cluster0.kc11wqu.mongodb.net/digitalMozartDB?retryWrites=true&w=majority&appName=Cluster0
