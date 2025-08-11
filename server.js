@@ -27,8 +27,9 @@ app.use(express.urlencoded({ extended: true }));
 // CORS Configuration
 app.use(cors({
   origin: [
-    'http://localhost:3000',
-    'http://localhost:3100'
+    'http://localhost:3001',
+    'http://localhost:3100',
+    'https://visualoptimizationfront-end.onrender.com',
   ],
   credentials: true
 }));
@@ -36,8 +37,10 @@ app.use(cors({
 // Initialize Socket.io
 const io = require('socket.io')(server, {
   cors: {
-    origin: ['http://localhost:3000'],
-    methods: ['GET', 'POST']
+    origin: ['https://visualoptimizationfront-end.onrender.com',
+    'http://localhost:3000'],
+    credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
   }
 });
 
@@ -64,8 +67,8 @@ app.get('/api/health', (req, res) => {
 
 // Mount routes
 // app.use('/api/auth', authRoutes);
-app.use('/api/auth', authRoutes); // ✅ mount auth routes here
-app.use('/api/tests', testRoutes);
+app.use('/auth', authRoutes); // ✅ mount auth routes here
+app.use('/tests', testRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
