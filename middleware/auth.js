@@ -3,6 +3,10 @@ const User = require('../models/User');
 
 
 const auth = async (req, res, next) => {
+  console.log("Auth check:", req.headers.authorization);
+  if (!req.headers.authorization) {
+    return res.status(401).json({ error: 'No token provided' });
+  }
   try {
     // Get token from header
     const token = req.header('Authorization')?.replace('Bearer ', '');

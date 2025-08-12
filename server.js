@@ -19,20 +19,6 @@ if (process.env.MONGODB_URI) {
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.error('MongoDB connection error:', err));
 }
-// 
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// CORS Configuration
-app.use(cors({
-  origin: [
-    'http://localhost:3001',
-    'http://localhost:3100',
-    'https://visualoptimizationfront-end.onrender.com',
-  ],
-  credentials: true
-}));
 
 // Initialize Socket.io
 const io = require('socket.io')(server, {
@@ -40,7 +26,7 @@ const io = require('socket.io')(server, {
     origin: ['https://visualoptimizationfront-end.onrender.com',
     'http://localhost:3000'],
     credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE']
+  methods: ['GET', 'POST', 'PUT', 'DELETE','OPTIONS']
   }
 });
 
@@ -59,9 +45,26 @@ io.on('connection', (socket) => {
 
 app.set('io', io);
 
+app.use((req, res, next) => {
+  console.log(`[REQ] ${req.method} ${req.url}`);
+  next();
+});
 
+// Body parsers
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// CORS
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3100',
+    'https://visualoptimizationfront-end.onrender.com',
+  ],
+  credentials: true
+}));
 // Basic route for health check
-app.get('/api/health', (req, res) => {
+app.get('/health', (req, res) => {
   res.json({ status: 'OK' });
 });
 
@@ -74,6 +77,12 @@ app.use('/tests', testRoutes);
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
+});
+
+
+app.post('/auth/login', (req, res, next) => {
+  console.log('Middleware hit:', req.body);
+  next();
 });
 
 // Production configuration
